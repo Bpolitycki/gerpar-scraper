@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "gerpar-scraper"
+version = "0.1.0"
+description = "A python based utility for scraping newer protocols of the german parliament."
+authors = ["Bpolitycki <bastian.politycki@unisg.ch>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+playwright = "^1.32.1"
+aiohttp = "^3.8.4"
+saxonche = "^12.1.0"
+saxonche-stubs = "^0.3.0"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.262"
+black = "^23.3.0"
+
+[tool.ruff]
+select = ["E", "F", "I001"]
+ignore = ["E501"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
