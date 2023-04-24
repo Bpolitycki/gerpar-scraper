@@ -1,6 +1,7 @@
 import asyncio
 from dataclasses import dataclass
 
+from aiohttp import ClientSession
 from playwright.async_api import async_playwright
 
 
@@ -8,6 +9,12 @@ from playwright.async_api import async_playwright
 class ProtocolUrls:
     period: str
     urls: list[str]
+
+
+@dataclass
+class ProtocolResponse:
+    url: str
+    content: str
 
 
 def split_link(link: str) -> str:
@@ -77,4 +84,18 @@ async def find_all_links(
 ) -> list[ProtocolUrls]:
     async with asyncio.TaskGroup() as task_group:
         results = [task_group.create_task(find_protocol_urls(base_url, i)) for i in ids]
+    return [r.result() for r in results]
+
+
+async def download(url: str) -> ProtocolResponse:
+    async with ClientSession() as session:
+        async with session.get(url=url) as response:
+            content = await response.text(encoding="utf-8")
+    return ProtocolResponse(url, content)
+
+
+async def bulk_download(urls: list[str]) -> list[ProtocolResponse]:
+    async with asyncio.TaskGroup() as task_group:
+        results = [task_group.create_task(download(url)) for url in urls]
+
     return [r.result() for r in results]
