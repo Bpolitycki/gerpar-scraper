@@ -73,7 +73,9 @@ async def save_xml_files(
         saved_files = [
             task_group.create_task(
                 xml_file_writer(
-                    r.content, split_link(r.url).replace("-data", ""), base_path
+                    r.content.replace("\xa0", " "),
+                    split_link(r.url).replace("-data", ""),
+                    base_path,
                 )
             )
             for r in responses
@@ -85,7 +87,7 @@ def speech_xpath_builder(speech_xpath: str) -> str:
     return (
         "for $speech in //rede return map {'id': $speech/@id/data(.), 'speech': $speech"
         + speech_xpath
-        + " => string-join('\n'), 'role': $speech//name//rolle_kurz/text() => head(), 'forename': $speech//name/vorname/text() => distinct-values(), 'surename': $speech//name/nachname/text() => distinct-values(), 'party': $speech//name/fraktion/text() => distinct-values()}"
+        + " => string-join('\n'), 'role': $speech//name//rolle_kurz/text() => head(), 'forename': $speech//name/vorname/text() => head(), 'surename': $speech//name/nachname/text() => head(), 'party': $speech//name/fraktion/text() => head()}"
     )
 
 
